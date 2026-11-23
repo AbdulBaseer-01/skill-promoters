@@ -1,26 +1,149 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   Skill Promoters — design tokens
+   Charcoal / ivory base, stone + architectural grey secondaries,
+   one restrained bronze accent. Photography carries the colour.
+------------------------------------------------------------------- */
+@theme {
+  --color-charcoal: #171816;
+  --color-charcoal-2: #20211e;
+  --color-ivory: #f4f2ed;
+  --color-paper: #ffffff;
+  --color-stone: #d9d6ce;
+  --color-grey: #85847e;
+  --color-grey-dark: #5f5e59;
+  --color-bronze: #b39470;
+  --color-bronze-deep: #7d6243;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+
+  --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  --breakpoint-3xl: 112rem;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --gutter: clamp(1.25rem, 4.2vw, 4.5rem);
+  --nav-h: 5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-charcoal);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-bronze);
+  color: var(--color-charcoal);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Anchor offset when JS smooth scrolling is unavailable */
+section[id] {
+  scroll-margin-top: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Shared page frame — identical left and right content edges */
+@utility frame {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 120rem;
+  padding-inline: var(--gutter);
+}
+
+/* Small editorial label: one per section, never stacked */
+@utility eyebrow {
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Masked line used by GSAP text reveals */
+@utility line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* Hero entrance: hidden only when the motion script is active.
+   The inline head script removes .motion-boot after 4s as a safety net. */
+.motion-boot [data-hero-in] {
+  opacity: 0;
+}
+.motion-boot [data-hero-line] > span {
+  transform: translateY(105%);
+}
+
+@keyframes scrollcue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+/* Link underline that draws on hover */
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.6s var(--ease-cine);
+}
+.link-draw:hover,
+.link-draw:focus-visible {
+  background-size: 100% 1px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-bronze);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

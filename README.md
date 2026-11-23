@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Skill Promoters — website redesign concept
 
-## Getting Started
+A single-page corporate site for Skill Promoters Pvt. Ltd. (Hyderabad, est. 1994), built as a proposed replacement for skillpromoters.co.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Set `NEXT_PUBLIC_SITE_URL` in production so canonical and Open Graph URLs resolve correctly (it defaults to `https://www.skillpromoters.co`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4
+- GSAP + ScrollTrigger: hero timeline, line reveals, image clip reveals, parallax, statistic counters
+- Lenis: smooth wheel scrolling, driven by GSAP's ticker and feeding ScrollTrigger (`src/components/motion/SmoothScroll.tsx`). Touch devices keep native scrolling.
+- Framer Motion: navigation bar, full-screen mobile menu, Expertise image swap and accordion, form feedback
+- Fonts: Manrope + Instrument Serif via `next/font/google`
 
-## Learn More
+Each animated element has a single owner. GSAP works through the data attributes listed in `src/components/motion/MotionSection.tsx`, and Framer Motion only animates its own `motion.*` elements. Under `prefers-reduced-motion: reduce`, Lenis is not started, no GSAP animation runs and all content stays visible.
 
-To learn more about Next.js, take a look at the following resources:
+## Content
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+All copy and facts are in `src/lib/content.ts`, sourced from the existing site (home, Our Mission, Core Team, Fern Heights, Asian Suncity, Other Projects, Initiatives). Nothing has been invented. Verify a new project, figure or contact before adding it there.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Images
 
-## Deploy on Vercel
+Every photograph and render in `public/images` comes from the company's own uploads on the existing site, re-cropped and converted to WebP. The OG image (`public/og.jpg`) and the icons are derived from them. No stock imagery is used.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Known limitations
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Enquiry form is frontend-only.** It validates input and then offers a pre-filled `mailto:` link, and it tells the user plainly that nothing has been sent. To make it live, connect `onSubmit` in `src/components/sections/Contact.tsx` to a route handler or form service.
+- The Sarath City Capital Mall photo is only 1600px wide at source. A higher-resolution original would sharpen that full-width feature.
+- The commercial complex in Kondapur has no published imagery, so it is shown as type only.
